@@ -18,20 +18,14 @@
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <revision>0.0.7</revision>
+        <revision>0.0.8</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
-
     </properties>
 
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <version>3.1.0</version>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
@@ -55,6 +49,24 @@
                             <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                         </container>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <version>3.1.0</version>
+                    <inherited>false</inherited>
+                    <executions>
+                        <execution>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>${project.basedir}/ci/bump-tags.sh</executable>
+                                <commandlineArgs>${revision}</commandlineArgs>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -104,19 +116,6 @@
                     <plugin>
                         <artifactId>exec-maven-plugin</artifactId>
                         <groupId>org.codehaus.mojo</groupId>
-                        <inherited>false</inherited>
-                        <executions>
-                            <execution>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.basedir}/ci/bump-tags.sh</executable>
-                                    <commandlineArgs>${revision}</commandlineArgs>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
