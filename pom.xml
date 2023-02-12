@@ -18,7 +18,7 @@
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <revision>0.0.8</revision>
+        <revision>0.0.9</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
     </properties>
@@ -39,6 +39,7 @@
                     <artifactId>jib-maven-plugin</artifactId>
                     <version>3.3.1</version>
                     <configuration>
+                        <containerizingMode>packaged</containerizingMode>
                         <from>
                             <image>amazoncorretto:19-alpine3.17</image>
                         </from>
