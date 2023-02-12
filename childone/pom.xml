@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.example</groupId>
         <artifactId>java-versioning</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${sha1}${changelist}</version>
     </parent>
 
     <artifactId>childone</artifactId>
@@ -17,4 +17,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>java-versioning</artifactId>
-    <version>${revision}</version>
+    <version>${revision}${sha1}${changelist}</version>
     <packaging>pom</packaging>
     <modules>
         <module>childone</module>
@@ -18,7 +18,108 @@
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>0.0.1</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <sha1/>
+
     </properties>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <from>
+                            <image>amazoncorretto:19-alpine3.17</image>
+                        </from>
+                        <to>
+                            <image>ake3m/${project.artifactId}</image>
+                        </to>
+                        <container>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>snapshot</id>
+            <properties>
+                <jib.to.tags>br-${project.version}</jib.to.tags>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>master</id>
+            <properties>
+                <changelist/>
+                <sha1/>
+                <jib.to.tags>latest,v${project.version}</jib.to.tags>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${project.basedir}/ci/bump-tags.sh</executable>
+                                    <commandlineArgs>${revision}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
