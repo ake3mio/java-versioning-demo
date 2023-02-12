@@ -1,3 +1,5 @@
+set +x +e
+
 CURRENT_SNAPSHOT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 CURRENT_VERSION=$(echo $CURRENT_SNAPSHOT_VERSION | sed "s/-SNAPSHOT//")
 NEXT_VERSION=$(echo $CURRENT_VERSION | awk -F. -v OFS=. '{$NF += 1 ; print}')
@@ -14,4 +16,4 @@ mvn versions:set-property \
 
 git add pom.xml
 git commit -m "Preparing for next release version $NEXT_VERSION"
-git push origin master
+git push origin HEAD
